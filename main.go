@@ -1,14 +1,25 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
+	"time"
 	"transactsender/blockchain"
 )
 
 func main() {
 
-	contract := blockchain.ConnectToContract()
+	network, contract := blockchain.ConnectToContract()
+	fmt.Println("--- Успешное подключение к контракту! ---")
+	fmt.Println("--------------------------------------")
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	blockchain.ListenEvents(ctx, network)
+
+	time.Sleep(time.Second)
 
 	fmt.Println("--- Submit CreateCounter!")
 	err := blockchain.CallCreateCounter(contract, "5")
@@ -18,13 +29,7 @@ func main() {
 	fmt.Println("*** Transaction committed successfully!")
 	fmt.Println("--------------------------------------")
 
-	fmt.Println("--- Submit ReadCounter!")
-	err = blockchain.CallReadCounter(contract)
-	if err != nil {
-		log.Fatalln("Ошибка ReadCounter", err)
-	}
-	fmt.Println("*** Transaction committed successfully!")
-	fmt.Println("--------------------------------------")
+	time.Sleep(2 * time.Second)
 
 	fmt.Println("--- Submit IncrimentCounter!")
 	err = blockchain.CallIncrimentCounter(contract, "4")
@@ -34,13 +39,7 @@ func main() {
 	fmt.Println("*** Transaction committed successfully!")
 	fmt.Println("--------------------------------------")
 
-	fmt.Println("--- Submit ReadCounter!")
-	err = blockchain.CallReadCounter(contract)
-	if err != nil {
-		log.Fatalln("Ошибка ReadCounter", err)
-	}
-	fmt.Println("*** Transaction committed successfully!")
-	fmt.Println("--------------------------------------")
+	time.Sleep(3 * time.Second)
 
 	fmt.Println("--- Submit MinusCounter!")
 	err = blockchain.CallMinusCounter(contract)
@@ -50,11 +49,5 @@ func main() {
 	fmt.Println("*** Transaction committed successfully!")
 	fmt.Println("--------------------------------------")
 
-	fmt.Println("--- Submit ReadCounter!")
-	err = blockchain.CallReadCounter(contract)
-	if err != nil {
-		log.Fatalln("Ошибка ReadCounter", err)
-	}
-	fmt.Println("*** Transaction committed successfully!")
-	fmt.Println("--------------------------------------")
+	select {}
 }

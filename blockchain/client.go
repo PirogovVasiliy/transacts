@@ -27,7 +27,7 @@ const (
 	channelName   = "mychannel"
 )
 
-func ConnectToContract() *client.Contract {
+func ConnectToContract() (*client.Network, *client.Contract) {
 	clientConnect, err := connect()
 	if err != nil {
 		log.Fatalln("Ошибка подключения grpc!", err)
@@ -52,7 +52,7 @@ func ConnectToContract() *client.Contract {
 
 	network := gw.GetNetwork(channelName)
 	contract := network.GetContract(chaincodeName)
-	return contract
+	return network, contract
 }
 
 func connect() (*grpc.ClientConn, error) {
